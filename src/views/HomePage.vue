@@ -1,5 +1,6 @@
 <template>
   <ion-page>
+
     <ion-content :fullscreen="true">
       <ion-searchbar
         @ionChange="searchUser"
@@ -13,7 +14,7 @@
           <ion-item>
             <ion-label>
               <h2><strong>Usuario:</strong> {{ user.username }}</h2>
-              <h3><strong>Identidad:</strong> {{ user.value }}</h3>
+              <h3><strong>Identidad:</strong> {{ user.identity }}</h3>
               <p>
                 <strong>Nombre:</strong> {{ user.name }} {{ user.last_name }}
               </p>
@@ -95,8 +96,9 @@ export default defineComponent({
       });
     },
     editUser(user: any) {
-      this.$router.push({
-        name: "editUser",
+      sessionStorage.setItem("user",JSON.stringify(user))
+      this.$router.replace({
+        name: "edit",
       });
     },
   },
