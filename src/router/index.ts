@@ -13,10 +13,9 @@ const routes: Array<RouteRecordRaw> = [
     component: HomePage,
   },
   {
-    path: "/edit",
-    name: "editUser",
+    path: "/edit/",
+    name: "edit",
     component: EditUserPage,
-    props: { default: true },
   },
 ];
 
