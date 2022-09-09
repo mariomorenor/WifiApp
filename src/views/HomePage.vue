@@ -73,18 +73,6 @@ export default defineComponent({
     };
   },
   methods: {
-    getUsers() {
-      for (let index = 0; index < 100; index++) {
-        this.users.push({
-          id: index,
-          username: "",
-          value: "",
-          name: "",
-          last_name: "",
-          status: 1,
-        });
-      }
-    },
     searchUser(ctx: any) {
       if (ctx.detail.value == "") {
         this.users = [];
@@ -97,6 +85,9 @@ export default defineComponent({
     editUser(user: any) {
       this.$router.push({
         name: "editUser",
+        params: {
+          us: Object.assign({}, user),
+        },
       });
     },
   },
