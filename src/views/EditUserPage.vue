@@ -2,10 +2,16 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-button @click="home()" color="tertiary"> Regresar </ion-button>
+        <ion-button @click="home()" color="tertiary"> Inicio </ion-button>
       </ion-toolbar>
     </ion-header>
     <ion-content>
+      <ion-item>
+        <ion-label>
+          <h2>Usuario: {{ user.username }}</h2>
+          <p>Correo: {{ user.email }}</p>
+        </ion-label>
+      </ion-item>
       <ion-item>
         <ion-label position="stacked">Contraseña:</ion-label>
         <ion-input v-model="user.value"></ion-input>
@@ -18,6 +24,7 @@
 </template>
 
 <script lang="ts">
+import { Http, HttpResponse } from "@capacitor-community/http";
 import {
   IonPage,
   IonHeader,
@@ -31,12 +38,24 @@ import {
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 
+import { store } from "../store";
+
+type User = {
+  id: number;
+  username: string;
+  value: string;
+  name: string;
+  last_name: string;
+  status: number;
+};
+
 export default defineComponent({
   name: "EditPage",
   data() {
     return {
-      user: {} as string | null,
-      d: "",
+      host: process.env.VUE_APP_SERVER_HOST,
+      store,
+      user: {} as User,
     };
   },
   components: {
@@ -50,30 +69,35 @@ export default defineComponent({
     IonButton,
   },
   mounted() {
-    let user = sessionStorage.getItem("user");
-    if (typeof user == "string") {
-      this.user = JSON.parse(user);
-    }
+    this.user = this.store.user;
   },
   methods: {
     home() {
-      this.$router.replace("/");
+      this.$router.back();
     },
-    updatePassword() {
-      this.axios
-        .post("/updatePassword", {
+    async updatePassword() {
+      const options = {
+        url: `${this.host}/updatePassword`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
           user: this.user,
-        })
-        .then(async(res) => {
-          sessionStorage.setItem("user", JSON.stringify(this.user));
-          const toast = await toastController.create({
-            message: "Se ha cambiado la contraseña con éxito",
-            duration: 1500,
-            position: "middle",
-          });
-
-          await toast.present();
+        },
+      };
+      const toast = await toastController.create({
+        message: "Se ha cambiado la contraseña con éxito",
+        duration: 1500,
+        position: "middle",
+      });
+      Http.post(options).then((res) => {
+        this.store.users.forEach((u) => {
+          if (u.id == this.user.id) {
+            u.value = this.user.value;
+          }
         });
+        toast.present();
+      });
     },
   },
 });

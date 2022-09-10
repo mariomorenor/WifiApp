@@ -1,6 +1,5 @@
 <template>
   <ion-page>
-
     <ion-content :fullscreen="true">
       <ion-searchbar
         @ionChange="searchUser"
@@ -10,7 +9,7 @@
       ></ion-searchbar>
 
       <ion-list>
-        <ion-item-sliding v-for="user in users" :key="user.id">
+        <ion-item-sliding v-for="user in store.users" :key="user.id">
           <ion-item>
             <ion-label>
               <h2><strong>Usuario:</strong> {{ user.username }}</h2>
@@ -45,15 +44,9 @@ import {
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 
-import axios from "axios";
-type User = {
-  id: number;
-  username: string;
-  value: string;
-  name: string;
-  last_name: string;
-  status: number;
-};
+import { Http, HttpResponse } from "@capacitor-community/http";
+
+import { store } from "../store";
 
 export default defineComponent({
   name: "HomePage",
@@ -70,34 +63,32 @@ export default defineComponent({
   },
   data() {
     return {
-      users: [] as Array<User>,
+      host: process.env.VUE_APP_SERVER_HOST,
+      store,
     };
   },
   methods: {
-    getUsers() {
-      for (let index = 0; index < 100; index++) {
-        this.users.push({
-          id: index,
-          username: "",
-          value: "",
-          name: "",
-          last_name: "",
-          status: 1,
-        });
-      }
-    },
-    searchUser(ctx: any) {
+    async searchUser(ctx: any) {
       if (ctx.detail.value == "") {
-        this.users = [];
+        this.store.users = [];
         return;
       }
-      this.axios.post(`getUser/${ctx.detail.value}`).then((result) => {
-        this.users = result.data;
-      });
+      const options = {
+        url: `${this.host}/getUser`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          identity: ctx.detail.value,
+        },
+      };
+
+      const response: HttpResponse = await Http.post(options);
+      this.store.users = response.data;
     },
     editUser(user: any) {
-      sessionStorage.setItem("user",JSON.stringify(user))
-      this.$router.replace({
+      this.store.user = Object.assign({}, user);
+      this.$router.push({
         name: "edit",
       });
     },
@@ -105,32 +96,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-#container {
-  text-align: center;
-
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
-}
-</style>
+<style scoped></style>
