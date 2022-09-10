@@ -2,7 +2,9 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-button @click="home()" color="tertiary"> Inicio </ion-button>
+        <ion-buttons>
+          <ion-back-button></ion-back-button>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-content>
@@ -35,6 +37,8 @@ import {
   IonItem,
   IonButton,
   toastController,
+  IonBackButton,
+  IonButtons
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 
@@ -51,6 +55,7 @@ type User = {
 
 export default defineComponent({
   name: "EditPage",
+
   data() {
     return {
       host: process.env.VUE_APP_SERVER_HOST,
@@ -67,6 +72,8 @@ export default defineComponent({
     IonLabel,
     IonItem,
     IonButton,
+    IonBackButton,
+    IonButtons
   },
   mounted() {
     this.user = this.store.user;
