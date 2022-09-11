@@ -8,6 +8,18 @@
         autocomplete="on"
       ></ion-searchbar>
 
+      <!-- fab placed to the bottom end -->
+      <ion-fab vertical="bottom" horizontal="end">
+        <ion-fab-button>
+          <ion-icon :icon="add"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-list side="top">
+          <ion-fab-button @click="configView()" color="tertiary">
+            <ion-icon :icon="build"></ion-icon>
+          </ion-fab-button>
+        </ion-fab-list>
+      </ion-fab>
+
       <ion-list>
         <ion-item-sliding v-for="user in store.users" :key="user.id">
           <ion-item>
@@ -41,7 +53,14 @@ import {
   IonItemOption,
   IonItemOptions,
   IonList,
+  IonIcon,
+  IonFabButton,
+  IonFab,
+  IonFabList
 } from "@ionic/vue";
+
+import { add, build  } from "ionicons/icons";
+
 import { defineComponent } from "vue";
 
 import { Http, HttpResponse } from "@capacitor-community/http";
@@ -60,10 +79,19 @@ export default defineComponent({
     IonItemOption,
     IonItemOptions,
     IonList,
+    IonIcon,
+    IonFabButton,
+    IonFab,
+    IonFabList
+  },
+  setup() {
+    return {
+      add,
+      build 
+    };
   },
   data() {
     return {
-      host: process.env.VUE_APP_SERVER_HOST,
       store,
     };
   },
@@ -74,7 +102,7 @@ export default defineComponent({
         return;
       }
       const options = {
-        url: `${this.host}/getUser`,
+        url: `${this.store.host}/getUser`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -89,9 +117,14 @@ export default defineComponent({
     editUser(user: any) {
       this.store.user = Object.assign({}, user);
       this.$router.push({
-        name: "edit",
+        name: "EditView",
       });
     },
+    configView(){
+      this.$router.push({
+        name:"ConfigView"
+      })
+    }
   },
 });
 </script>

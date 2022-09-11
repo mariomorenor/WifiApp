@@ -42,7 +42,7 @@ import {
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 
-import { store } from "../store";
+import { store,st } from "../store";
 
 type User = {
   id: number;
@@ -58,7 +58,6 @@ export default defineComponent({
 
   data() {
     return {
-      host: process.env.VUE_APP_SERVER_HOST,
       store,
       user: {} as User,
     };
@@ -84,7 +83,7 @@ export default defineComponent({
     },
     async updatePassword() {
       const options = {
-        url: `${this.host}/updatePassword`,
+        url: `${this.store.host}/updatePassword`,
         headers: {
           "Content-Type": "application/json",
         },
