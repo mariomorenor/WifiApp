@@ -70,6 +70,8 @@ export default defineComponent({
         position: "middle",
       });
       this.store.host = this.host;
+      console.log(this.host);
+
       st.set("server_host", this.host);
       toast.present();
     },

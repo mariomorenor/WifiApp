@@ -7,13 +7,7 @@
 <script lang="ts">
 import { IonApp, IonRouterOutlet } from "@ionic/vue";
 import { defineComponent } from "vue";
-import { Storage } from "@ionic/storage";
-import { store } from "./store";
-
-const st = new Storage({
-  name: "data",
-});
-st.create();
+import { store, st } from "./store";
 
 export default defineComponent({
   name: "App",
@@ -34,7 +28,10 @@ export default defineComponent({
       let host = await st.get("server_host");
 
       console.log(host);
-      if (host) {
+      if (host == null) {
+        st.set("server_host", this.store.host);
+      } else {
+        st.set("server_host", host);
         this.store.host = host;
       }
     },
