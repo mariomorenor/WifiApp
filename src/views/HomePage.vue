@@ -14,6 +14,9 @@
           <ion-icon :icon="add"></ion-icon>
         </ion-fab-button>
         <ion-fab-list side="top">
+          <ion-fab-button @click="addUserView()" color="success">
+            <ion-icon :icon="personAddOutline"></ion-icon>
+          </ion-fab-button>
           <ion-fab-button @click="configView()" color="tertiary">
             <ion-icon :icon="build"></ion-icon>
           </ion-fab-button>
@@ -56,10 +59,10 @@ import {
   IonIcon,
   IonFabButton,
   IonFab,
-  IonFabList
+  IonFabList,
 } from "@ionic/vue";
 
-import { add, build  } from "ionicons/icons";
+import { add, build, personAddOutline } from "ionicons/icons";
 
 import { defineComponent } from "vue";
 
@@ -82,12 +85,13 @@ export default defineComponent({
     IonIcon,
     IonFabButton,
     IonFab,
-    IonFabList
+    IonFabList,
   },
   setup() {
     return {
       add,
-      build 
+      build,
+      personAddOutline,
     };
   },
   data() {
@@ -120,11 +124,16 @@ export default defineComponent({
         name: "EditView",
       });
     },
-    configView(){
+    configView() {
       this.$router.push({
-        name:"ConfigView"
-      })
-    }
+        name: "ConfigView",
+      });
+    },
+    addUserView() {
+      this.$router.push({
+        name: "AddUserView",
+      });
+    },
   },
 });
 </script>

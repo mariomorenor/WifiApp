@@ -3,6 +3,7 @@ import { RouteRecordRaw } from "vue-router";
 import HomePage from "../views/HomePage.vue";
 import EditUserPage from "../views/EditUserPage.vue";
 import ConfigPage from "../views/ConfigPage.vue";
+import AddUserPage from "../views/AddUserPage.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -22,6 +23,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/config",
     name: "ConfigView",
     component: ConfigPage,
+  },
+  {
+    path: "/addUser",
+    name: "AddUserView",
+    component: AddUserPage,
   },
 ];
 
