@@ -2,6 +2,7 @@
   <ion-page>
     <ion-content :fullscreen="true" class="">
       <ion-searchbar
+        v-model="search_user"
         @ionChange="searchUser"
         show-cancel-button="focus"
         placeholder="Buscar Usuario..."
@@ -10,7 +11,7 @@
 
       <ion-list class="contenido">
         <ion-item-sliding v-for="user in store.users" :key="user.id">
-          <ion-item>
+          <ion-item @click="actionSheet(user)">
             <ion-label>
               <h2><strong>Usuario:</strong> {{ user.username }}</h2>
               <h3><strong>Identidad:</strong> {{ user.identity }}</h3>
@@ -74,6 +75,7 @@ import {
   IonButton,
   alertController,
   toastController,
+  actionSheetController,
 } from "@ionic/vue";
 
 import { add, build, personAddOutline, trash, pencil } from "ionicons/icons";
@@ -103,7 +105,7 @@ export default defineComponent({
     IonFabList,
     IonButton,
   },
-  setup() {
+  setup(props, context) {
     return {
       add,
       build,
@@ -115,6 +117,7 @@ export default defineComponent({
   data() {
     return {
       store,
+      search_user: "",
     };
   },
   methods: {
@@ -199,6 +202,54 @@ export default defineComponent({
       };
 
       return await Http.post(options);
+    },
+    async actionSheet(user: User) {
+      const actionSheet = await actionSheetController.create({
+        buttons: [
+          {
+            text: "Editar",
+            handler: () => {
+              this.editUser(user);
+            },
+          },
+          {
+            text: "Eliminar",
+            handler: async () => {
+              alert.present();
+            },
+          },
+        ],
+      });
+
+      const alert = await alertController.create({
+        header: "Atención",
+        message: `Está a punto de Eliminar al usuario ${user.name} ${user.last_name}, ¿Está Seguro?`,
+        buttons: [
+          {
+            text: "Aceptar",
+            role: "confirm",
+            handler: () => {
+              this.deleteUser(user).then((r) => {
+                this.search_user = "";
+                toast.present();
+              });
+            },
+          },
+          {
+            text: "Cancelar",
+            role: "cancel",
+          },
+        ],
+      });
+
+      const toast = await toastController.create({
+        message: "Se ha eliminado el usuario Correctamente!",
+        duration: 2000,
+        position: "bottom",
+        color: "success",
+      });
+
+      actionSheet.present();
     },
   },
 });
