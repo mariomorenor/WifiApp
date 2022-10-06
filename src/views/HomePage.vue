@@ -87,6 +87,8 @@ import { Http, HttpResponse } from "@capacitor-community/http";
 import { store } from "../store";
 import { User } from "@/types";
 
+import { Share } from "@capacitor/share";
+
 export default defineComponent({
   name: "HomePage",
   components: {
@@ -204,12 +206,27 @@ export default defineComponent({
       return await Http.post(options);
     },
     async actionSheet(user: User) {
+      let userDataEscaped = `Nombre: ${user.name} ${user.last_name}
+      Email: ${user.email}
+      Usuario: ${user.username}
+      Contraseña: ${user.value}
+      `;
+
       const actionSheet = await actionSheetController.create({
         buttons: [
           {
             text: "Editar",
             handler: () => {
               this.editUser(user);
+            },
+          },
+          {
+            text: "Compartir",
+            handler: async () => {
+              await Share.share({
+                title: "Pilas no le pases a nadie Capo",
+                text: userDataEscaped,
+              });
             },
           },
           {
