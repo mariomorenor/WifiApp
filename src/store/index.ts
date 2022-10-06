@@ -1,15 +1,7 @@
 import { reactive } from "vue";
 
-type User = {
-  id: number;
-  username: string;
-  value: string;
-  name: string;
-  last_name: string;
-  status: number;
-};
-
 import { Storage } from "@ionic/storage";
+import { User } from "@/types";
 const s = new Storage();
 s.create();
 

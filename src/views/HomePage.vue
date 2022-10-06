@@ -83,15 +83,7 @@ import { defineComponent } from "vue";
 import { Http, HttpResponse } from "@capacitor-community/http";
 
 import { store } from "../store";
-
-type User = {
-  id: number;
-  username: string;
-  value: string;
-  name: string;
-  last_name: string;
-  status: number;
-};
+import { User } from "@/types";
 
 export default defineComponent({
   name: "HomePage",
