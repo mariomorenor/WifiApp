@@ -5,4 +5,6 @@ export type User = {
   name: string;
   last_name: string;
   status: number;
+  identity: string;
+  email: string;
 };
