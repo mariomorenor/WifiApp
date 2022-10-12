@@ -1,13 +1,10 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true" class="">
-      <ion-searchbar
-        v-model="search_user"
-        @ionChange="searchUser"
-        show-cancel-button="focus"
-        placeholder="Buscar Usuario..."
-        autocomplete="on"
-      ></ion-searchbar>
+      <ion-loading :is-open="searching" message="Buscando Usuario, dame un chance...">
+      </ion-loading>
+      <ion-searchbar :debounce="1000" v-model="search_user" @ionChange="searchUser" show-cancel-button="focus"
+        placeholder="Buscar Usuario..." autocomplete="on"></ion-searchbar>
 
       <ion-list class="contenido">
         <ion-item-sliding v-for="user in store.users" :key="user.id">
@@ -76,6 +73,7 @@ import {
   alertController,
   toastController,
   actionSheetController,
+  IonLoading
 } from "@ionic/vue";
 
 import { add, build, personAddOutline, trash, pencil } from "ionicons/icons";
@@ -88,6 +86,7 @@ import { store } from "../store";
 import { User } from "@/types";
 
 import { Share } from "@capacitor/share";
+import { loadingController } from "@ionic/core";
 
 export default defineComponent({
   name: "HomePage",
@@ -106,8 +105,11 @@ export default defineComponent({
     IonFab,
     IonFabList,
     IonButton,
+    IonLoading
   },
   setup(props, context) {
+
+
     return {
       add,
       build,
@@ -120,6 +122,7 @@ export default defineComponent({
     return {
       store,
       search_user: "",
+      searching: false
     };
   },
   methods: {
@@ -128,6 +131,7 @@ export default defineComponent({
         this.store.users = [];
         return;
       }
+      this.searching = true
       const options = {
         url: `${this.store.host}/getUser`,
         headers: {
@@ -138,8 +142,21 @@ export default defineComponent({
         },
       };
 
-      const response: HttpResponse = await Http.post(options);
-      this.store.users = response.data;
+      const toast = await toastController.create({
+        message: "Portate serio mijin, no existen usuarios con esos datos",
+        color: "danger",
+        duration: 3000,
+      });
+
+      Http.post(options).then(response => {
+
+        if (response.data.length == 0) {
+
+          toast.present();
+        }
+        this.searching = false
+        this.store.users = response.data;
+      });
     },
     editUser(user: User) {
       this.store.user = Object.assign({}, user);
