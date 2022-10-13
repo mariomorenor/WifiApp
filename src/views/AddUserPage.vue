@@ -8,6 +8,9 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
+      <ion-loading :is-open="searching"
+        message="Ajustando tornillos, moviendo las caderas y... Guardando al Usuario :3">
+      </ion-loading>
       <form id="form">
         <ion-item>
           <ion-label position="floating">Usuario:</ion-label>
@@ -19,7 +22,7 @@
         </ion-item>
         <ion-item>
           <ion-label position="floating">Cédula:</ion-label>
-          <ion-input required type="number" v-model="user.identity"></ion-input>
+          <ion-input required @change="setPossiblyPassword()" type="number" v-model="user.identity"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Email:</ion-label>
@@ -37,8 +40,8 @@
           <ion-label position="floating">Carrera:</ion-label>
           <ion-input v-model="user.career"></ion-input>
         </ion-item>
-        <ion-button type="submit" expand="block" @click="saveUser()"
-          >GUARDAR <ion-icon class="ion-padding-start" :icon="save"></ion-icon>
+        <ion-button type="submit" expand="block" @click="saveUser()">GUARDAR <ion-icon class="ion-padding-start"
+            :icon="save"></ion-icon>
         </ion-button>
       </form>
     </ion-content>
@@ -59,6 +62,7 @@ import {
   IonBackButton,
   IonButtons,
   IonIcon,
+  IonLoading
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 
@@ -86,6 +90,7 @@ export default defineComponent({
         last_name: "",
         career: "",
       },
+      searching: false
     };
   },
   components: {
@@ -100,6 +105,7 @@ export default defineComponent({
     IonBackButton,
     IonButtons,
     IonIcon,
+    IonLoading
   },
   mounted() {
     let form = document.getElementById("form");
@@ -123,7 +129,7 @@ export default defineComponent({
       ) {
         return;
       }
-
+      this.searching = true
       let options = {
         url: `${this.store.host}/createUser`,
         headers: {
@@ -135,18 +141,26 @@ export default defineComponent({
         duration: 2000,
         position: "bottom",
       });
-      const result: HttpResponse = await Http.post(options);
-      if (result.status == 500) {
+      
+      Http.post(options).then((result) => {
+        if (result.status == 500) {
+          throw result;
+          
+        }
+        toast.message = `Se ha insertado al usuario ${this.user.username} con éxito`;
+        toast.color = "success";
+        toast.present();
+        this.resetUser();
+      }).catch((err) => {
         toast.color = "danger";
         toast.message =
           "Error Al insertar el usuario, verifique que el usuario no exista en la base de datos";
         toast.present();
-        return;
-      }
-      toast.message = `Se ha insertado al usuario ${this.user.username} con éxito`;
-      toast.color = "success";
-      toast.present();
-      this.resetUser();
+      }).finally(() => {
+        this.searching = false;
+      });
+
+
     },
     resetUser() {
       this.user.username = "";
@@ -157,8 +171,15 @@ export default defineComponent({
       this.user.last_name = "";
       this.user.career = "";
     },
+    setPossiblyPassword() {
+      if (this.user.password == "") {
+        this.user.password = this.user.identity
+      }
+    }
   },
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>
