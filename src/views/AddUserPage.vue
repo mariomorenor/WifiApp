@@ -8,18 +8,20 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
+      <ion-loading :is-open="searching" message="Guardando Usuario, Espere por favor no sea apurado...">
+      </ion-loading>
       <form id="form">
         <ion-item>
           <ion-label position="floating">Usuario:</ion-label>
-          <ion-input required v-model="user.username"></ion-input>
+          <ion-input @change="setEmail()" required v-model="user.username"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Cédula:</ion-label>
+          <ion-input @change="setPossiblyPassword()" required type="number" v-model="user.identity"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Contraseña:</ion-label>
           <ion-input required v-model="user.password"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label position="floating">Cédula:</ion-label>
-          <ion-input required type="number" v-model="user.identity"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Email:</ion-label>
@@ -37,8 +39,8 @@
           <ion-label position="floating">Carrera:</ion-label>
           <ion-input v-model="user.career"></ion-input>
         </ion-item>
-        <ion-button type="submit" expand="block" @click="saveUser()"
-          >GUARDAR <ion-icon class="ion-padding-start" :icon="save"></ion-icon>
+        <ion-button type="submit" expand="block" @click="saveUser()">GUARDAR <ion-icon class="ion-padding-start"
+            :icon="save"></ion-icon>
         </ion-button>
       </form>
     </ion-content>
@@ -59,6 +61,7 @@ import {
   IonBackButton,
   IonButtons,
   IonIcon,
+  IonLoading
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 
@@ -66,6 +69,7 @@ import { save } from "ionicons/icons";
 
 import { store, st } from "../store";
 import { Http, HttpResponse } from "@capacitor-community/http";
+import { modalController } from "@ionic/core";
 
 export default defineComponent({
   name: "AddUserPage",
@@ -86,6 +90,7 @@ export default defineComponent({
         last_name: "",
         career: "",
       },
+      searching: false
     };
   },
   components: {
@@ -100,6 +105,7 @@ export default defineComponent({
     IonBackButton,
     IonButtons,
     IonIcon,
+    IonLoading
   },
   mounted() {
     let form = document.getElementById("form");
@@ -124,6 +130,8 @@ export default defineComponent({
         return;
       }
 
+      this.searching = true;
+
       let options = {
         url: `${this.store.host}/createUser`,
         headers: {
@@ -141,12 +149,14 @@ export default defineComponent({
         toast.message =
           "Error Al insertar el usuario, verifique que el usuario no exista en la base de datos";
         toast.present();
+        this.searching = false
         return;
       }
       toast.message = `Se ha insertado al usuario ${this.user.username} con éxito`;
       toast.color = "success";
       toast.present();
       this.resetUser();
+      this.searching = false
     },
     resetUser() {
       this.user.username = "";
@@ -157,8 +167,16 @@ export default defineComponent({
       this.user.last_name = "";
       this.user.career = "";
     },
+    setPossiblyPassword() {
+      this.user.password = this.user.identity
+    },
+    setEmail() {
+      this.user.email = `${this.user.username}@pucesd.edu.ec`
+    }
   },
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>
