@@ -7,4 +7,5 @@ export type User = {
   status: number;
   identity: string;
   email: string;
+  "career-unit": string;
 };
