@@ -12,6 +12,10 @@
         <ion-label position="stacked">Server:</ion-label>
         <ion-input v-model="host"></ion-input>
       </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Server Time:</ion-label>
+        <ion-input v-model="biotime_host"></ion-input>
+      </ion-item>
       <ion-button expand="block" @click="setConfig()">ACTUALIZAR</ion-button>
     </ion-content>
   </ion-page>
@@ -42,6 +46,7 @@ export default defineComponent({
     return {
       store,
       host: "",
+      biotime_host:""
     };
   },
   components: {
@@ -58,6 +63,7 @@ export default defineComponent({
   },
   mounted() {
     this.host = this.store.host;
+    this.biotime_host = this.store.biotime_host;
   },
   methods: {
     home() {
@@ -70,9 +76,10 @@ export default defineComponent({
         position: "middle",
       });
       this.store.host = this.host;
-      console.log(this.host);
+      this.store.biotime_host = this.biotime_host;
 
       st.set("server_host", this.host);
+      st.set("biotime_host", this.biotime_host);
       toast.present();
     },
   },

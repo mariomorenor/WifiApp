@@ -26,14 +26,23 @@ export default defineComponent({
   methods: {
     async getServerHost() {
       let host = await st.get("server_host");
+      let biotime_host = await st.get("biotime_host");
 
-      console.log(host);
       if (host == null) {
         st.set("server_host", this.store.host);
       } else {
         st.set("server_host", host);
         this.store.host = host;
       }
+
+
+      if (biotime_host == null) {
+        st.set("biotime_host", this.store.biotime_host);
+      } else {
+        st.set("biotime_host", host);
+        this.store.biotime_host = biotime_host;
+      }
+
     },
   },
 });

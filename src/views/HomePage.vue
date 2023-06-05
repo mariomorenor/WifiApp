@@ -42,6 +42,9 @@
           <ion-icon :icon="add"></ion-icon>
         </ion-fab-button>
         <ion-fab-list side="top">
+          <ion-fab-button @click="timesView()" color="danger">
+            <ion-icon :icon="alarmOutline"></ion-icon>
+          </ion-fab-button>
           <ion-fab-button @click="addUserView()" color="success">
             <ion-icon :icon="personAddOutline"></ion-icon>
           </ion-fab-button>
@@ -76,7 +79,7 @@ import {
   IonLoading
 } from "@ionic/vue";
 
-import { add, build, personAddOutline, trash, pencil } from "ionicons/icons";
+import { add, build, personAddOutline, trash, pencil, alarmOutline } from "ionicons/icons";
 
 import { defineComponent } from "vue";
 
@@ -116,6 +119,7 @@ export default defineComponent({
       personAddOutline,
       trash,
       pencil,
+      alarmOutline
     };
   },
   data() {
@@ -207,6 +211,11 @@ export default defineComponent({
     addUserView() {
       this.$router.push({
         name: "AddUserView",
+      });
+    },
+    timesView() {
+      this.$router.push({
+        name: "TimesView",
       });
     },
     async deleteUser(user: User) {
