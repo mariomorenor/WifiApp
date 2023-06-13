@@ -39,7 +39,7 @@ export default defineComponent({
       if (biotime_host == null) {
         st.set("biotime_host", this.store.biotime_host);
       } else {
-        st.set("biotime_host", host);
+        st.set("biotime_host", biotime_host);
         this.store.biotime_host = biotime_host;
       }
 

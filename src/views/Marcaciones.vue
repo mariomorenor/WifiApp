@@ -64,6 +64,7 @@ import { save } from "ionicons/icons";
 
 import { store, st } from "../store";
 import { Http, HttpResponse } from "@capacitor-community/http";
+import moment from "moment"
 
 export default defineComponent({
   name: "BiotimePage",
@@ -114,7 +115,7 @@ export default defineComponent({
       if (time) {
         let hour = d.getHours() < 10 ? `0${d.getHours()}` : d.getHours();
         let minute = d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes();
-        let seconds = d.getSeconds() < 10 ? `0${d.getSeconds()}` : d.getSeconds();
+        let seconds = moment().format("ss");
         datetime = `${datetime} ${hour}:${minute}:${seconds}`
       }
       return datetime;
